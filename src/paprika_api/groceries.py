@@ -69,6 +69,17 @@ def get_grocery_lists(client: PaprikaClient) -> list[GroceryList]:
     return cast(list[GroceryList], response.json()["result"])
 
 
+def post_grocery_lists(client: PaprikaClient, grocery_lists: Iterable[GroceryList]) -> None:
+    data = gzip.compress(json.dumps(list(grocery_lists)).encode("utf8"))
+    response = client.session.post(
+        f"{client.base_url}/sync/grocerylists/",
+        files={"data": data},
+    )
+    response.raise_for_status()
+    if response.json().get("result", False) is False:
+        raise PaprikaError(request=response.request)
+
+
 def get_groceries(client: PaprikaClient) -> list[Grocery]:
     response = client.session.get(f"{client.base_url}/sync/groceries/")
     response.raise_for_status()
@@ -89,7 +100,10 @@ def get_grocery_ingredients(client: PaprikaClient) -> list[GroceryIngredient]:
 
 def post_groceries(client: PaprikaClient, groceries: Iterable[Grocery]) -> None:
     data = gzip.compress(json.dumps(list(groceries)).encode("utf8"))
-    response = client.session.post(f"{client.base_url}/sync/groceries/", files={"data": data})
+    response = client.session.post(
+        f"{client.base_url}/sync/groceries/",
+        files={"data": data},
+    )
     response.raise_for_status()
     if response.json().get("result", False) is False:
         raise PaprikaError(request=response.request)
