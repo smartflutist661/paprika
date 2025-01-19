@@ -1,0 +1,34 @@
+name: Code Quality Tests
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+      - name: Install uv
+        id: install-uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      - name: mypy
+        run: uv run -- mypy -p paprika_api
+        if: steps.install-uv.conclusion == 'success'
+      - name: pylint
+        run: uv run -- pylint -d C,R paprika_api
+        if: steps.install-uv.conclusion == 'success'
+      - name: black
+        run: uv run -- black --check paprika_api
+        if: steps.install-uv.conclusion == 'success'
+      - name: isort
+        run: uv run -- isort --check paprika_api
+        if: steps.install-uv.conclusion == 'success'
+      - name: prints
+        run: uv run -- flake8 --select T201 paprika_api
+        if: steps.install-uv.conclusion == 'success'
