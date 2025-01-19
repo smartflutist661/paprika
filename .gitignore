@@ -15,3 +15,6 @@ wheels/
 .pydevproject
 .project
 .mypy_cache/
+
+# Top-level Python files (convenience for testing)
+/*.py
