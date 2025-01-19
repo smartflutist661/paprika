@@ -1,12 +1,24 @@
 [project]
 name = "paprika-api"
 version = "0.1.0"
-description = "Unofficial API for Paprika"
+description = "Unofficial SDK for Paprika API"
 readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.12"
 dependencies = [
     "requests~=2.32",
 ]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3.12",
+]
+
+[project.urls]
+Repository = "https://github.com/smartflutist661/paprika.git"
+Issues = "https://github.com/smartflutist661/paprika/issues"
+Changelog = "https://github.com/smartflutist661/paprika/blob/main/CHANGELOG.md"
 
 [build-system]
 requires = ["hatchling"]
@@ -42,3 +54,4 @@ profile = "black"
 line_length = 99
 combine_as_imports = true
 force_grid_wrap = 2
+
