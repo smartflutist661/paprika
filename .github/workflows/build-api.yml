@@ -1,0 +1,24 @@
+name: Publish API Package
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+      - name: Tag release
+        run: |
+          version=$(python -c 'import tomllib; from pathlib import Path; print(tomllib.load(Path("pyproject.toml").open("rb"))["project"]["version"])' | tr -d " \n\r\t")
+          git tag $version
+          git push origin $version
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      - name: Publish
+        run: uv publish --publish-url https://test.pypi.org/legacy/ --trusted-publishing always
