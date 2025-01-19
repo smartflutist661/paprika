@@ -5,6 +5,7 @@ from typing import (
     NewType,
     TypedDict,
     cast,
+    Optional,
 )
 
 from paprika_api.exceptions import PaprikaError
@@ -19,15 +20,15 @@ GroceryIngredientId = NewType("GroceryIngredientId", str)
 class GroceryAisle(TypedDict):
     uid: GroceryAisleId
     name: str
-    order_flag: int
+    order_flag: Optional[int]
 
 
 class GroceryList(TypedDict):
     uid: GroceryListId
     name: str
-    order_flag: int
+    order_flag: Optional[int]
     is_default: bool
-    reminders_list: str
+    reminders_list: Optional[str]
 
 
 class Grocery(TypedDict):
@@ -47,14 +48,14 @@ class Grocery(TypedDict):
     name: str
     order_flag: int
     purchased: bool
-    aisle: str
+    aisle: Optional[str]
     ingredient: str
-    recipe: str
+    recipe: Optional[str]
     instruction: str
     quantity: str
     separate: bool
-    aisle_uid: GroceryAisleId
-    list_uid: GroceryListId
+    aisle_uid: Optional[GroceryAisleId]
+    list_uid: Optional[GroceryListId]
 
 
 class GroceryIngredient(TypedDict):
