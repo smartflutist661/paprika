@@ -6,6 +6,7 @@ dist/
 wheels/
 *.egg-info
 
+
 # Virtual environments
 .venv
 
@@ -13,4 +14,4 @@ wheels/
 
 .pydevproject
 .project
-/.mypy_cache/
+.mypy_cache/
