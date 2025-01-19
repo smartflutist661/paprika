@@ -3,10 +3,11 @@ from typing import (
     cast,
 )
 
+from paprika_api.exceptions import PaprikaError
 from paprika_api.paprika import PaprikaClient
 
 
-class SyncResponse(TypedDict):
+class SyncCounters(TypedDict):
     categories: int
     recipes: int
     photos: int
@@ -23,10 +24,12 @@ class SyncResponse(TypedDict):
     menuitems: int
 
 
-def get_status(client: PaprikaClient) -> SyncResponse:
+def get_status(client: PaprikaClient) -> SyncCounters:
     response = client.session.get(
         f"{client.base_url}/sync/status/",
         timeout=client.timeout,
     )
     response.raise_for_status()
-    return cast(SyncResponse, response.json()["result"])
+    if response.json().get("result", False) is False:
+        raise PaprikaError(request=response.request)
+    return cast(SyncCounters, response.json()["result"])
