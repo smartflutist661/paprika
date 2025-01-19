@@ -3,9 +3,9 @@ import json
 from collections.abc import Iterable
 from typing import (
     NewType,
+    Optional,
     TypedDict,
     cast,
-    Optional,
 )
 
 from paprika_api.exceptions import PaprikaError
@@ -15,6 +15,8 @@ GroceryListId = NewType("GroceryListId", str)
 GroceryId = NewType("GroceryId", str)
 GroceryAisleId = NewType("GroceryAisleId", str)
 GroceryIngredientId = NewType("GroceryIngredientId", str)
+
+Ingredient = NewType("Ingredient", str)
 
 
 class GroceryAisle(TypedDict):
@@ -36,20 +38,23 @@ class Grocery(TypedDict):
     recipe_uid:
         Always None, even when `recipe` is populated
     name:
-        This shows up in the Items section of the Ingredient if there is more than one
+        This shows up in the Items section of the Ingredient if there is more than one.
+        By default, a combination of `ingredient` and `instruction`
     ingredient:
-        This is what actually appears in the list
+        This is what actually appears in the list; pseudo-unique identifier
     quantity:
         A string that includes units
+    instruction:
+        Notes
     """
 
     uid: GroceryId
     recipe_uid: None
     name: str
-    order_flag: int
+    order_flag: Optional[int]
     purchased: bool
     aisle: Optional[str]
-    ingredient: str
+    ingredient: Ingredient
     recipe: Optional[str]
     instruction: str
     quantity: str
@@ -60,8 +65,8 @@ class Grocery(TypedDict):
 
 class GroceryIngredient(TypedDict):
     uid: GroceryIngredientId
-    name: str
-    aisle_uid: GroceryAisleId
+    name: Ingredient
+    aisle_uid: Optional[GroceryAisleId]
 
 
 def get_grocery_lists(client: PaprikaClient) -> list[GroceryList]:
@@ -87,10 +92,32 @@ def get_groceries(client: PaprikaClient) -> list[Grocery]:
     return cast(list[Grocery], response.json()["result"])
 
 
+def post_groceries(client: PaprikaClient, groceries: Iterable[Grocery]) -> None:
+    data = gzip.compress(json.dumps(list(groceries)).encode("utf8"))
+    response = client.session.post(
+        f"{client.base_url}/sync/groceries/",
+        files={"data": data},
+    )
+    response.raise_for_status()
+    if response.json().get("result", False) is False:
+        raise PaprikaError(request=response.request)
+
+
 def get_grocery_aisles(client: PaprikaClient) -> list[GroceryAisle]:
     response = client.session.get(f"{client.base_url}/sync/groceryaisles/")
     response.raise_for_status()
     return cast(list[GroceryAisle], response.json()["result"])
+
+
+def post_grocery_aisles(client: PaprikaClient, grocery_aisles: Iterable[GroceryAisle]) -> None:
+    data = gzip.compress(json.dumps(list(grocery_aisles)).encode("utf8"))
+    response = client.session.post(
+        f"{client.base_url}/sync/groceryaisles/",
+        files={"data": data},
+    )
+    response.raise_for_status()
+    if response.json().get("result", False) is False:
+        raise PaprikaError(request=response.request)
 
 
 def get_grocery_ingredients(client: PaprikaClient) -> list[GroceryIngredient]:
@@ -99,10 +126,13 @@ def get_grocery_ingredients(client: PaprikaClient) -> list[GroceryIngredient]:
     return cast(list[GroceryIngredient], response.json()["result"])
 
 
-def post_groceries(client: PaprikaClient, groceries: Iterable[Grocery]) -> None:
-    data = gzip.compress(json.dumps(list(groceries)).encode("utf8"))
+def post_grocery_ingredients(
+    client: PaprikaClient,
+    grocery_ingredients: Iterable[GroceryIngredient],
+) -> None:
+    data = gzip.compress(json.dumps(list(grocery_ingredients)).encode("utf8"))
     response = client.session.post(
-        f"{client.base_url}/sync/groceries/",
+        f"{client.base_url}/sync/groceryingredients/",
         files={"data": data},
     )
     response.raise_for_status()
