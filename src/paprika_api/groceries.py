@@ -25,6 +25,7 @@ class GroceryAisle(TypedDict):
     uid: GroceryAisleId
     name: AisleName
     order_flag: Optional[int]
+    deleted: bool
 
 
 class GroceryList(TypedDict):
@@ -33,6 +34,7 @@ class GroceryList(TypedDict):
     order_flag: Optional[int]
     is_default: bool
     reminders_list: Optional[str]
+    deleted: bool
 
 
 class Grocery(TypedDict):
@@ -63,12 +65,14 @@ class Grocery(TypedDict):
     separate: bool
     aisle_uid: Optional[GroceryAisleId]
     list_uid: Optional[GroceryListId]
+    deleted: bool
 
 
 class GroceryIngredient(TypedDict):
     uid: GroceryIngredientId
     name: Ingredient
     aisle_uid: Optional[GroceryAisleId]
+    deleted: bool
 
 
 def get_grocery_lists(client: PaprikaClient) -> list[GroceryList]:

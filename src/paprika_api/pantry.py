@@ -32,6 +32,7 @@ class PantryItem(TypedDict):
     aisle_uid: Optional[GroceryAisleId]
     location_uid: None
     notes: None
+    deleted: bool
 
 
 def get_pantry_items(client: PaprikaClient) -> list[PantryItem]:
