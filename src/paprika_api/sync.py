@@ -1,10 +1,28 @@
 from typing import (
+    Literal,
     TypedDict,
     cast,
 )
 
 from paprika_api.exceptions import PaprikaError
 from paprika_api.paprika import PaprikaClient
+
+Route = Literal[
+    "categories",
+    "recipes",
+    "photos",
+    "groceries",
+    "grocerylists",
+    "groceryaisles",
+    "groceryingredients",
+    "meals",
+    "mealtypes",
+    "bookmarks",
+    "pantry",
+    "pantrylocations",
+    "menus",
+    "menuitems",
+]
 
 
 class SyncCounters(TypedDict):

@@ -17,17 +17,19 @@ GroceryAisleId = NewType("GroceryAisleId", str)
 GroceryIngredientId = NewType("GroceryIngredientId", str)
 
 Ingredient = NewType("Ingredient", str)
+AisleName = NewType("AisleName", str)
+ListName = NewType("ListName", str)
 
 
 class GroceryAisle(TypedDict):
     uid: GroceryAisleId
-    name: str
+    name: AisleName
     order_flag: Optional[int]
 
 
 class GroceryList(TypedDict):
     uid: GroceryListId
-    name: str
+    name: ListName
     order_flag: Optional[int]
     is_default: bool
     reminders_list: Optional[str]
